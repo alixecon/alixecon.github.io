@@ -1,0 +1,82 @@
+body {
+    font-family: sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    color: #333;
+    background-color: #f4f4f4;
+}
+
+header {
+    background: #005f73; /* A professional blue */
+    color: #fff;
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 80%;
+    margin: auto;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+}
+
+.nav-links li a {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 20px;
+}
+
+section {
+    padding: 60px 0;
+    text-align: center;
+    width: 80%;
+    margin: auto;
+}
+
+#hero {
+    background: #0a9396;
+    color: #fff;
+    height: 60vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.cta-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background: #ee9b00; /* Accent color */
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.project-grid {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+}
+
+.project-card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    flex: 1;
+}
+
+footer {
+    background: #333;
+    color: #fff;
+    text-align: center;
+    padding: 20px 0;
+}
