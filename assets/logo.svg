@@ -1,0 +1,11 @@
+<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Outer square (modern minimalist Saudi green) -->
+  <rect x="20" y="20" width="60" height="60" 
+        fill="none" stroke="#006C67" stroke-width="4" />
+
+  <!-- Inner diamond (desert gold accent) -->
+  <path d="M50 28 L72 50 L50 72 L28 50 Z" 
+        fill="none" stroke="#C4A574" stroke-width="3" />
+
+  <!-- Optional: Subtle dot in the center (precision, econometrics) -->
+  <circle cx="50" cy="50" r="2.5" fill="#006C6
