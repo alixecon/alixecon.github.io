@@ -19,6 +19,7 @@ nav {
   background: rgba(250,250,247,0.8);
   backdrop-filter: blur(6px);
   border-bottom: 1px solid rgba(0,0,0,0.05);
+  z-index: 1000;
 }
 
 .nav-container {
@@ -43,7 +44,12 @@ nav a {
   padding: 9rem 1rem 5rem;
 }
 
-.hero h1 {
+.sub-hero {
+  text-align: center;
+  padding: 7rem 1rem 3rem;
+}
+
+.hero h1, .sub-hero h1 {
   font-family: "Inter";
   font-size: 3rem;
   margin: 0;
@@ -88,11 +94,27 @@ footer {
   font-size: 0.9rem;
 }
 
-/* Subtle geometric motif using borders */
 .motif {
   width: 12px;
   height: 12px;
   margin: 0 auto 1rem;
   border: 2px solid var(--accent);
   transform: rotate(45deg);
+}
+
+/* Chart containers */
+.chart-container {
+  width: 100%;
+  height: 420px;
+  margin: 2rem 0;
+  padding: 1rem;
+  border: 1px solid rgba(0,0,0,0.05);
+  border-radius: 6px;
+  background: white;
+}
+
+.subtitle {
+  color: var(--text-muted);
+  margin-top: -10px;
+  font-size: 1rem;
 }
