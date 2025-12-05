@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Interactive Charts | Ali Madkhali</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+
+<body>
+
+<nav>
+  <div class="nav-container">
+    <a class="logo" href="index.html"><img src="assets/logo.svg" height="28"></a>
+    <div class="links">
+      <a href="projects.html">Projects</a>
+      <a href="data.html">Data</a>
+      <a href="charts.html">Charts</a>
+      <a href="cv.html">CV</a>
+    </div>
+  </div>
+</nav>
+
+<header class="sub-hero">
+  <h1>Interactive Charts</h1>
+  <p class="subtitle">Econometric Visualizations by Ali Madkhali</p>
+  <div class="accent-line"></div>
+</header>
+
+<section class="content">
+
+  <h2>1. GDP Time Series (Interactive)</h2>
+  <div id="chart1" class="chart-container"></div>
+
+  <h2>2. Scatter Plot with Regression Line</h2>
+  <div id="chart2" class="chart-container"></div>
+
+  <h2>3. Multi-Series Inflation Components</h2>
+  <div id="chart3" class="chart-container"></div>
+
+</section>
+
+<script>
+// 1. Time Series Chart
+Plotly.d3.csv("assets/time_series.csv", function(err, rows) {
+    function unpack(rows, key) { return rows.map(r => r[key]); }
+
+    var trace = {
+        x: unpack(rows, "date"),
+        y: unpack(rows, "value"),
+        type: "scatter",
+        mode: "lines",
+        line: {color: "#006C67", width: 3}
+    };
+
+    Plotly.newPlot("chart1", [trace], {
+        margin: {t: 20},
+        paper_bgcolor: 'rgba(0,0,0,0)',
+        plot_bgcolor: 'rgba(0,0,0,0)'
+    });
+});
+
+// 2. Scatter + Regression
+Plotly.d3.csv("assets/sample_data.csv", function(err, rows) {
+    const x = rows.map(r => +r.x);
+    const y = rows.map(r => +r.y);
+
+    const n = x.length;
+    const xmean = x.reduce((a,b)=>a+b)/n;
+    const ymean = y.reduce((a,b)=>a+b)/n;
+    const slope = x.reduce((sum, xi, i) => sum + (xi-xmean)*(y[i]-ymean), 0) /
+                  x.reduce((sum, xi) => sum + (xi-xmean)**2, 0);
+    const intercept = ymean - slope * xmean;
+
+    const yhat = x.map(xi => intercept + slope * xi);
+
+    Plotly.newPlot("chart2", [
+        { x, y, mode: "markers", type: "scatter", marker: {color:"#C4A574"} },
+        { x, y: yhat, mode: "lines", line: {color:"#006C67", width:3} }
+    ], {
+        margin: {t:20},
+        paper_bgcolor:'rgba(0,0,0,0)',
+        plot_bgcolor:'rgba(0,0,0,0)'
+    });
+});
+
+// 3. Multi-Series Chart
+Plotly.newPlot("chart3", [
+    { x:[2018,2019,2020,2021,2022], y:[3.1,2.7,5.6,4.3,2.9], name:"Food", mode:"lines", line:{color:"#006C67"} },
+    { x:[2018,2019,2020,2021,2022], y:[1.2,0.8,2.2,1.4,1.1], name:"Transport", mode:"lines", line:{color:"#C4A574"} },
+    { x:[2018,2019,2020,2021,2022], y:[0.4,0.6,1.0,0.9,0.7], name:"Housing", mode:"lines", line:{color:"#4A4A4A"} }
+], {
+    margin:{t:20},
+    legend: {orientation: "h"},
+    paper_bgcolor:'rgba(0,0,0,0)',
+    plot_bgcolor:'rgba(0,0,0,0)'
+});
+</script>
+
+<footer>
+  <div class="motif"></div>
+  <p>© 2025 Ali Madkhali</p>
+</footer>
+
+</body>
+</html>
