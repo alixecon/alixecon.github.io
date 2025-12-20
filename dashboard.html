@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Welcome, {{ username }}!</h1>
+    <h2>AI-Picked Stocks for Day Trading</h2>
+    <p><strong>Disclaimer:</strong> These are simulated picks based on technical analysis. Not financial advice. Day trading is risky.</p>
+    <ul>
+        {% for pick in picks %}
+        <li><strong>{{ pick.symbol }}</strong>: {{ pick.action }} at ${{ pick.price }} - {{ pick.reason }}</li>
+        {% endfor %}
+    </ul>
+    {% if not picks %}
+    <p>No strong signals today. Check back later!</p>
+    {% endif %}
+    <a href="{{ url_for('logout') }}">Logout</a>
+</body>
+</html>
