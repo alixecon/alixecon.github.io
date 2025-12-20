@@ -6,13 +6,16 @@ from wtforms.validators import DataRequired, Length, EqualTo
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 import yfinance as yf
-import talib
 import pandas as pd
+from ta.momentum import RSIIndicator
+from ta.trend import SMAIndicator
 from datetime import datetime, timedelta
+import os
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your-secret-key-here'  # Change to a random string
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'  # SQLite for simplicity
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secret-key-here')  # Use env var in production
+# Allow an environment DATABASE_URL (e.g. from Render/Heroku) with fallback to sqlite
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///users.db')
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
@@ -52,19 +55,30 @@ class DayTradingAgent:
                 data = yf.download(symbol, period='1d', interval='1m')
                 if data.empty:
                     continue
-                close = data['Close'].values
-                rsi = talib.RSI(close, timeperiod=14)
-                sma_short = talib.SMA(close, timeperiod=5)
-                sma_long = talib.SMA(close, timeperiod=10)
-                if len(rsi) > 1 and rsi[-1] < 30 and close[-1] > close[-2] and sma_short[-1] > sma_long[-1]:
+                close = data['Close']  # pandas Series
+                # Need enough data points for indicators
+                if len(close) < 15:
+                    continue
+
+                rsi = RSIIndicator(close, window=14).rsi()  # Series with possible NaNs at start
+                sma_short = SMAIndicator(close, window=5).sma_indicator()
+                sma_long = SMAIndicator(close, window=10).sma_indicator()
+
+                # Ensure we have valid latest values
+                if rsi.isna().all():
+                    continue
+                rsi_last = rsi.dropna().iloc[-1]
+
+                if rsi_last < 30 and close.iloc[-1] > close.iloc[-2] and sma_short.iloc[-1] > sma_long.iloc[-1]:
                     self.picks.append({
                         'symbol': symbol,
                         'action': 'BUY',
-                        'reason': f'AI Signal: RSI {rsi[-1]:.2f} < 30, rising price, MA crossover',
-                        'price': close[-1]
+                        'reason': f'AI Signal: RSI {rsi_last:.2f} < 30, rising price, MA crossover',
+                        'price': float(close.iloc[-1])
                     })
-            except:
-                pass  # Skip on error
+            except Exception:
+                # Skip on any error (network, yfinance, indicator calculation, etc.)
+                pass
         return self.picks[:5]  # Top 5 picks
 
 agent = DayTradingAgent()
@@ -80,6 +94,11 @@ def home():
 def signup():
     form = SignupForm()
     if form.validate_on_submit():
+        # Check if username already exists
+        existing_user = User.query.filter_by(username=form.username.data).first()
+        if existing_user:
+            flash('Username already exists. Choose another.', 'danger')
+            return redirect(url_for('signup'))
         hashed_password = generate_password_hash(form.password.data, method='sha256')
         new_user = User(username=form.username.data, password=hashed_password)
         db.session.add(new_user)
