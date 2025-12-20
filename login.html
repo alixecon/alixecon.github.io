@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Log In</title>
+</head>
+<body>
+    <h1>Log In to Day Trading Platform</h1>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <p>{{ form.username.label }}: {{ form.username() }}</p>
+        <p>{{ form.password.label }}: {{ form.password() }}</p>
+        <p>{{ form.submit() }}</p>
+    </form>
+    <a href="{{ url_for('signup') }}">Don't have an account? Sign up</a>
+</body>
+</html>
